@@ -1,0 +1,39 @@
+{
+    "background_color": "#5e31b1",
+    "theme_color": "#5e31b1",
+    "description": "Impresión de tickets térmicos en red local",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "/static/icons/icon-32.png",
+            "sizes": "32x32",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/static/icons/icon-256.png",
+            "sizes": "256x256",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/static/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/static/icons/icon-maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "name": "PyReceipt",
+    "short_name": "PyReceipt",
+    "start_url": "/",
+    "dir": "ltr",
+    "lang": "en",
+    "orientation": "portrait",
+    "categories": ["utilities"]
+}

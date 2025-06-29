@@ -1,0 +1,306 @@
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('/static/fonts/roboto-regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('/static/fonts/roboto-bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+
+
+
+/* Colores */
+:root[data-theme="light"] {
+    --bg: #f5f5f6;
+    --sh: #d4d4d4;
+    --bd: white;
+    --accent: #5e31b1; /* Material deep purple 600 */
+    --haccent: #311B92; /* Material deep purple 900 */
+    --grey: #4f4f4f;
+    --table-even: #f5f5f5;
+    --text: #000000;
+    --field: #ffffff;
+    --border: #ccc;
+    --btn-bg: #5e31b1;
+    --btn-text: #ffffff;
+    --table-header-bg: #e0e0e0;
+    --table-header-text: #000000;
+
+    --primary: #bb86fc;
+}
+
+:root[data-theme="dark"] {
+        --bg: #4f4f4f;
+        --sh: #121212;
+        --bd: #121212;
+        --fg: white;
+        --accent: #673ab7;      
+        --haccent: #b39ddb;     
+        --grey: #eeeeee;
+        --table-even: #202020;
+        --error-timer: var(--haccent);
+        --table-header-bg: #1e1e1e;
+        --table-header-text: #ffffff;
+
+        
+        --text: #ffffff;
+        --field: #1e1e1e;
+        --primary: #bb86fc;
+        --btn-bg: #bb86fc;
+        --btn-text: #000000;
+        --border: #333;
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+    :root[data-theme="dark"] {
+        --bg: #4f4f4f;
+        --sh: #121212;
+        --bd: #121212;
+        --fg: white;
+        --accent: #673ab7;      
+        --haccent: #b39ddb;     
+        --grey: #eeeeee;
+        --table-even: #202020;
+        --error-timer: var(--haccent);
+        --table-header-bg: #1e1e1e;
+        --table-header-text: #ffffff;
+
+        
+        --text: #ffffff;
+        --field: #1e1e1e;
+        --primary: #bb86fc;
+        --btn-bg: #bb86fc;
+        --btn-text: #000000;
+        --border: #333;
+    }
+
+    td > a {
+        color: var(--grey)!important;
+    }
+    
+}
+
+input, select, textarea {
+    background-color: var(--field);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+body {
+    margin: 20px auto;
+    max-width: 800px;
+    box-shadow: 0 0 10px var(--sh);
+    background-color: var(--bd);
+    color: var(--text);
+    font-family: 'Roboto';
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.tittle-container {
+    text-align: center;
+}
+
+.items-container {
+    text-align: center;
+}
+
+/* ITEMS TABLE */
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;     /* honor col widths */
+  margin-top: 10px;
+}
+
+/* Set column widths */
+.items-table .col-name   { width: auto;  } /* fluid */
+.items-table .col-qty    { width: 13%;  } /* narrow */
+.items-table .col-price  { width: 17%;  } /* narrow */
+.items-table .col-action { width: 10%;  } /* for the “remove” button */
+
+/* Header styling */
+.items-table th {
+  text-align: center;
+  padding: 6px 8px;
+  background:  var(--table-header-bg);
+  color: var(--table-header-text);
+  font-weight: 500;
+  font-size: 14px;
+  border: 1px solid #ddd;
+}
+
+/* Cell styling */
+.items-table td {
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  vertical-align: middle;
+}
+
+/* Inputs inside cells fill their cell */
+.items-table input {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+  padding: 4px;
+}
+
+.items-table {
+  font-size: 14px;
+  padding: 0 1%;
+  line-height: 1;
+}
+
+.table-container {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.buttons-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.buttons-container button {
+    padding: 0.75rem 1.5rem;   /* Bigger buttons: more vertical and horizontal space 5e31b1 */
+    font-size: 1.1rem;         /* Slightly larger text */
+    border: none;
+    border-radius: 4px;
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.theme-selector-container {
+    margin-top: 10px;
+    display: flex;
+    text-align: center;
+    margin-bottom: 1rem;
+    justify-content: center;
+
+}
+
+.themebutton {
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+}
+
+/* Responsive: on very narrow screens, make rows stack */
+@media (max-width: 400px) {
+  .items-table thead {
+    display: none;  /* hide headers */
+  }
+  .items-table,
+  .items-table tbody,
+  .items-table tr,
+  .items-table td {
+    display: block;
+    width: 100%;
+  }
+  .items-table tr {
+    margin-bottom: 12px;
+  }
+  .items-table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+  .items-table td:before {
+    /* label each cell :absolute*/
+    position: absolute;
+    left: 8px;
+    width: calc(50% - 16px);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .items-table td:nth-of-type(1):before { content: "Name"; }
+  .items-table td:nth-of-type(2):before { content: "Qty"; }
+  .items-table td:nth-of-type(3):before { content: "Price"; }
+  .items-table td:nth-of-type(4):before { content: ""; }
+
+  .btn-sm {
+    font-size: 18px;
+    padding: 10px;
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+}
+
+.items-table td:nth-child(4),
+.items-table th:nth-child(4) {
+  padding: 1%;
+}
+
+.btn-sm {
+  display: block;
+  width: 90%;
+     /* 12px vertical padding for height */
+  font-size: 14px;
+  background: #e74c3c;
+  color: #fff;
+  padding: 6px 8px;      /* small but tappable */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-sm:hover {
+  background: #c0392b;
+}
+
+fieldset {
+  border: 1px solid #ccc;
+  padding: 1rem;
+}
+
+legend {
+  padding: 0 0.5rem;
+  font-weight: bold;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+/* Give the checkbox‐label a little breathing room */
+.option > label {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+/* And indent the text input to line up nicely */
+.option > input[type="text"] {
+  padding: 0.5rem;
+  font-size: 1rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+

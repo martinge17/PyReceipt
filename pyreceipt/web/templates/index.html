@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cliente para imprimir tickets">
+    <meta name="theme-color" content="#5e31b1">
+
+
+    <link rel="manifest" href="/static/manifest.webmanifest">
+
+    <title>PyReceipt</title>
+
+    <link rel="icon" sizes="32x32" href="/static/icons/icon-32.png">
+    <link rel="icon" sizes="256x256" href="/static/icons/icon-256.png">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+
+</head>
+
+<body>
+
+    <script>
+        (function () {
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+        })();
+    </script>
+
+    <div class="tittle-container">
+        <h1>PyReceipt</h1>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(function (reg) {
+                    console.log("SW registered!", reg);
+                })
+                .catch(function (err) {
+                    console.error("SW registration failed:", err);
+                });
+        }
+    </script>
+
+    <form id="receiptForm">
+        <fieldset>
+            <legend>Opciones</legend>
+
+            <div class="option">
+                <label>
+                    <input type="checkbox" id="header_toggle" />
+                    Incluir cabecera (texto y fecha) y pie
+                </label>
+                <input type="text" id="header" placeholder="Dejar vacío = 'Arreglos'" disabled />
+            </div>
+
+            <div class="option">
+                <input type="text" id="footer" placeholder="Dejar vacío = 'Gracias por su confianza!'" disabled />
+            </div>
+        </fieldset>
+        <div class="items-container">
+            <h2>Items</h2>
+        </div>
+
+        <div class="table-container">
+            <table class="items-table">
+                <colgroup>
+                    <col class="col-name" />
+                    <col class="col-qty" />
+                    <col class="col-price" />
+                    <col class="col-action" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="itemsBody"></tbody>
+            </table>
+        </div>
+
+        <div class="buttons-container">
+            <button type="button" id="addRowButton">+ Añadir fila</button>
+
+            <!-- <button type="button" onclick="addRow()">+ Añadir fila</button> -->
+            <button type="submit" class="btn btn-primary">Imprimir</button>
+        </div>
+
+        <div class="theme-selector-container">
+            <button id="themeToggleBtn" class="themebutton">🌙 Tema oscuro</button>
+        </div>
+
+
+    </form>
+
+    <p id="responseMessage" style="margin-top: 15px; font-weight: bold;"></p>
+
+
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get elements
+            const headerToggle = document.getElementById('header_toggle');
+            const headerInput = document.getElementById('header');
+            const footerInput = document.getElementById('footer');
+
+            // Function to toggle input fields based on checkbox
+            function toggleInputFields() {
+                // Toggle the disabled state of the header input
+                headerInput.disabled = !headerToggle.checked;
+
+                // Toggle the disabled state of the footer input TODO: This way I avoid printing problems with footer only
+                footerInput.disabled = !headerToggle.checked;
+            }
+
+            // Attach event listeners to checkboxes
+            headerToggle.addEventListener('change', toggleInputFields);
+
+            // Initialize input fields state based on current checkbox state
+            toggleInputFields();
+        });
+
+
+        document.getElementById('addRowButton').addEventListener('click', function () {
+            addRow(); // Passes no argument, so default values for name, quantity, price will be used
+        });
+
+
+        function addRow(name = '', quantity = 1, price = 0.0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td><input type="text" class="item-name" value="${name}" required></td>
+            <td><input type="number" class="item-qty" value="${quantity}" min="1" step="1" required></td>
+            <td><input type="number" class="item-price" value="${price}" min="0" step="0.01" required></td>
+            <td>
+            <button type="button" class="btn-sm" onclick="removeRow(this)">−</button>
+            </td>
+        `;
+            document.getElementById('itemsBody').appendChild(row);
+        }
+
+        function removeRow(button) {
+            button.closest('tr').remove();
+        }
+
+        document.getElementById('receiptForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const items = Array.from(document.querySelectorAll('#itemsBody tr')).map(row => ({
+                name: row.querySelector('.item-name').value,
+                quantity: parseInt(row.querySelector('.item-qty').value),
+                price_per_unit: parseFloat(row.querySelector('.item-price').value)
+            }));
+
+            const data = {
+                options: {
+                    header_toggle: document.getElementById('header_toggle').checked,
+                    header: document.getElementById('header').value || null,
+                    footer_toggle: document.getElementById('header_toggle').checked,
+                    footer: document.getElementById('footer').value || null
+                },
+                items: items
+            };
+
+            const response = await fetch('/api/print', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            document.getElementById('responseMessage').textContent =
+                result.message || result.error || 'Unknown response';
+        });
+
+        // Initialize with one row
+        addRow();
+    </script>
+
+    <script>
+        const btn = document.getElementById('themeToggleBtn');
+        const root = document.documentElement;
+
+        // Load saved theme
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark' || saved === 'light') {
+            root.setAttribute('data-theme', saved);
+            btn.textContent = saved === 'dark' ? '☀️ Tema claro' : '🌙 Tema oscuro';
+        }
+
+        btn.addEventListener('click', () => {
+            const current = root.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            btn.textContent = next === 'dark' ? '☀️ Tema claro' : '🌙 Tema oscuro';
+        });
+    </script>
+
+</body>
+
+</html>

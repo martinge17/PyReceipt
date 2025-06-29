@@ -1,0 +1,6 @@
+[printer]
+device = ""
+
+[strings]
+header = ""
+footer = ""

@@ -1,0 +1,13 @@
+services:
+  printer:
+    container_name: pyreceipt
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:81:80
+    volumes:
+      - ./printer.toml:/app/pyreceipt/printer.toml:ro
+    devices:
+      - "/dev/usb/lp0:/dev/usb/lp0"
